@@ -27,8 +27,6 @@ const getNoRepeatNumbers = (min, max) =>
 const getDescriptions = () => {
   const descriptions = [];
 
-  const noRepeatNumbersId = getNoRepeatNumbers(1, 25); // Массив с случайными не повторяющимися id
-  const noRepeatNumbersUrl = getNoRepeatNumbers(1, 25); // Массив с случайными не повторяющимися url
   const noRepeatNumbersComment = getNoRepeatNumbers(1, 75); // Массив с случайными неповторяющимися id комментариев
 
   let commentId = 0; // Вспомогательная переменная-счётчик, которая помогает нам ниже
@@ -40,8 +38,8 @@ const getDescriptions = () => {
   const names = ['Андрей', 'Юля', 'Денис', 'Маша', 'Женя', 'Петя', 'Олеся', 'Настя', 'Оксана', 'Дима', 'Гриша', 'Оля', 'Лера', 'Катя', 'Тима', 'Вася', 'Серёжа', 'Антон', 'Костя', 'Лёша'];
   for (let i = 0; i < 25; i++) {
     descriptions[i] = {};
-    descriptions[i].id = noRepeatNumbersId[i];
-    descriptions[i].url = `photos/${noRepeatNumbersUrl[i]}.jpg`;
+    descriptions[i].id = i + 1;
+    descriptions[i].url = `photos/${i + 1}.jpg`;
     descriptions[i].description = 'Описание к фото';
     descriptions[i].likes = getRandomNumber(15, 200);
     descriptions[i].comments = [{}, {}, {}];
@@ -49,8 +47,8 @@ const getDescriptions = () => {
       descriptions[i].comments[j].id = noRepeatNumbersComment[commentId];
       commentId++;
       descriptions[i].comments[j].avatar = `img/avatar-${getRandomNumber(1, 6)}.svg`;
-      descriptions[i].comments[j].message = messages[getRandomNumber(0, 5)];
-      descriptions[i].comments[j].name = names[getRandomNumber(0, 19)];
+      descriptions[i].comments[j].message = messages[getRandomNumber(0, messages.length - 1)];
+      descriptions[i].comments[j].name = names[getRandomNumber(0, names.length - 1)];
     }
   }
   return descriptions;
