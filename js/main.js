@@ -1,2 +1,3 @@
-import {getDescriptions} from './data.js';
-getDescriptions();
+import {getPictures} from './render-pictures.js';
+
+getPictures();
