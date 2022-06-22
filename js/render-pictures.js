@@ -4,6 +4,8 @@ const picturesContainer = document.querySelector('.pictures');
 const template = document.querySelector('#picture').content;
 const templateContent = template.querySelector('.picture');
 
+// Функция ниже отображает картинки в разметке
+
 const getPictures = () => {
   const fragment = document.createDocumentFragment();
   for (let i = 0; i < getDescriptions().length; i++){

@@ -1,3 +1,2 @@
-import {getPictures} from './render-pictures.js';
-
-getPictures();
+import {getFullSizeImage} from './full-size-image.js';
+getFullSizeImage();
