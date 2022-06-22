@@ -1,2 +1,6 @@
-import {getFullSizeImage} from './full-size-image.js';
-getFullSizeImage();
+import {getDescriptions} from './data.js';
+import {getPictures} from './render-pictures.js';
+
+
+const photos = getDescriptions();
+getPictures(photos);
