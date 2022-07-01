@@ -1,4 +1,4 @@
-import { getFullSizeImage } from './full-size-image.js';
+import { showFullSizeImage } from './full-size-image.js';
 
 // Функция ниже отображает картинки в разметке
 const createPictures = (photos) => {
@@ -14,8 +14,7 @@ const createPictures = (photos) => {
     fragment.append(picture);
 
     picture.addEventListener('click', () => {
-      getFullSizeImage(photos[i]);
-
+      showFullSizeImage(photos[i]);
     });
   }
   picturesContainer.append(fragment);

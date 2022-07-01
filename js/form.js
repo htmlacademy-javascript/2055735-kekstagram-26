@@ -1,8 +1,9 @@
-const esc = { key: 'Escape' };
-const regular = /^#[A-Za-zA-Яа-яЁё0-9]{1,999}$/;
-const maxHashtagsLength = 5;
-const hash = '#';
-const errors = {
+const ESC = { key: 'Escape' };
+const REGULAR = /^#[A-Za-zA-Яа-яЁё0-9]{1,999}$/;
+const MAX_HASHTAGS_AMOUNT = 5;
+const MAX_HASHTAG_LENGTH = 20;
+const HASH = '#';
+const ERRORS = {
   manyHashtags: 'Введено больше 5 хештегов',
   badSymbols: 'Хэштег должен содержать в себе буквы или цифры',
   missingGrille: 'Хэштег должен начинаться с #',
@@ -22,11 +23,11 @@ const uploadFile = document.querySelector('#upload-file');
 const buttonUploadCancel = document.querySelector('#upload-cancel');
 const effects = document.querySelectorAll('.effects__radio');
 const form = document.querySelector('.img-upload__form');
-const textHashtags = document.querySelector('.text__hashtags');
-const textDescriptions = document.querySelector('.text__description');
+const textHashtagsField = document.querySelector('.text__hashtags');
+const textDescriptionsField = document.querySelector('.text__description');
 const template = document.querySelector('#validate-error').content;
 const templateContent = template.querySelector('div');
-const containerHashtags = document.querySelector('.img-upload__field-wrapper');
+const hashtagsContainer = document.querySelector('.img-upload__field-wrapper');
 const validateError = templateContent.cloneNode(true);
 
 // Открытие редактирования
@@ -44,59 +45,59 @@ const closeModal = () => {
 
 // Закрытие редактирования на ESC
 function onModalEsc (evt) {
-  if (evt.key === esc.key) {
-    if (textHashtags !== document.activeElement && textDescriptions !== document.activeElement) {
-      closeModal();
-    }
+  if (evt.key !== ESC.key) {
+    return;
+  }
+  if (textHashtagsField !== document.activeElement && textDescriptionsField !== document.activeElement) {
+    closeModal();
   }
 }
 
-const addFormListenners = () => {
-  const addUploadImageButtonListener = () => {
-    uploadFile.addEventListener('change', openModal);
-  };
-  addUploadImageButtonListener();
-  buttonUploadCancel.addEventListener('click', closeModal);
-  document.addEventListener('keydown', onModalEsc);
+
+const addUploadImageButtonListener = () => {
+  uploadFile.addEventListener('change', openModal);
 };
+buttonUploadCancel.addEventListener('click', closeModal);
+document.addEventListener('keydown', onModalEsc);
+
 
 // Валидация
 
 // Удаление ошибки при невалидной валидации
 const removeError = () => {
-  containerHashtags.removeChild(validateError);
-  containerHashtags.classList.remove('has-danger');
-  textHashtags.removeEventListener('keydown', removeError);
+  hashtagsContainer.removeChild(validateError);
+  hashtagsContainer.classList.remove('has-danger');
+  textHashtagsField.removeEventListener('keydown', removeError);
 };
 // Добавление ошибки при невалидной валидации
 const addError = (errorName) => {
-  containerHashtags.append(validateError);
-  containerHashtags.classList.add('has-danger');
-  textHashtags.addEventListener('keydown', removeError);
+  hashtagsContainer.append(validateError);
+  hashtagsContainer.classList.add('has-danger');
+  textHashtagsField.addEventListener('keydown', removeError);
   validateError.textContent = errorName;
 };
 
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  const hashtags = textHashtags.value.split(' ');
+  const hashtags = textHashtagsField.value.split(' ');
   hashtags.forEach((hashtag) => {
-    if (hashtags.length > maxHashtagsLength) {
-      addError(errors.manyHashtags);
+    if (hashtags.length > MAX_HASHTAGS_AMOUNT) {
+      addError(ERRORS.manyHashtags);
     }
-    if(!regular.test(hashtag) && textHashtags.value.length !== 0){
-      addError(errors.badSymbols);
+    if(!REGULAR.test(hashtag) && textHashtagsField.value.length !== 0){
+      addError(ERRORS.badSymbols);
     }
-    if (hashtag.split('')[0] !== hash && textHashtags.value.length !== 0) {
-      addError(errors.missingGrille);
+    if (hashtag.split('')[0] !== HASH && textHashtagsField.value.length !== 0) {
+      addError(ERRORS.missingGrille);
     }
-    if (hashtag.split('')[0] === hash && hashtag.split('').length === 1) {
-      addError(errors.noCompleteHashtag);
+    if (hashtag.split('')[0] === HASH && hashtag.split('').length === 1) {
+      addError(ERRORS.noCompleteHashtag);
     }
     if (hashtag.indexOf('#', 1) >= 1) {
-      addError(errors.noSpace);
+      addError(ERRORS.noSpace);
     }
-    if (hashtag.length > 20) {
-      addError(errors.longHashtag);
+    if (hashtag.length > MAX_HASHTAG_LENGTH) {
+      addError(ERRORS.longHashtag);
     }
     const hashtagsLowLetters = [];
     const hashtagLowLetters = hashtag.toLowerCase();
@@ -104,7 +105,7 @@ form.addEventListener('submit', (evt) => {
       hashtagsLowLetters.push(hashtags[i].toLowerCase());
     }
     if (hashtagsLowLetters.filter((i) => i === hashtagLowLetters).length > 1) {
-      addError(errors.repeatHashtag);
+      addError(ERRORS.repeatHashtag);
     }
   });
 });
@@ -138,4 +139,4 @@ effects.forEach((effect) => {
   });
 });
 
-export { addFormListenners };
+export { addUploadImageButtonListener };
