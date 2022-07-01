@@ -1,3 +1,17 @@
+const esc = { key: 'Escape' };
+const regular = /^#[A-Za-zA-Яа-яЁё0-9]{1,999}$/;
+const maxHashtagsLength = 5;
+const hash = '#';
+const errors = {
+  manyHashtags: 'Введено больше 5 хештегов',
+  badSymbols: 'Хэштег должен содержать в себе буквы или цифры',
+  missingGrille: 'Хэштег должен начинаться с #',
+  noCompleteHashtag: 'Не дописан хэштег',
+  noSpace: 'Хештеги должны быть разделены пробелом',
+  longHashtag: 'Хэштег не может быть длиннее 20 символов',
+  repeatHashtag: 'Хэштеги не должны повторяться',
+  noImage: 'Не загружено изображение'
+};
 const imgEditForm = document.querySelector('.img-upload__overlay');
 const body = document.querySelector('body');
 const scaleBiggerButton = document.querySelector('.scale__control--bigger');
@@ -13,6 +27,7 @@ const textDescriptions = document.querySelector('.text__description');
 const template = document.querySelector('#validate-error').content;
 const templateContent = template.querySelector('div');
 const containerHashtags = document.querySelector('.img-upload__field-wrapper');
+const validateError = templateContent.cloneNode(true);
 
 // Открытие редактирования
 const openModal = () => {
@@ -29,23 +44,71 @@ const closeModal = () => {
 
 // Закрытие редактирования на ESC
 function onModalEsc (evt) {
-  if (evt.key === 'Escape') {
+  if (evt.key === esc.key) {
     if (textHashtags !== document.activeElement && textDescriptions !== document.activeElement) {
       closeModal();
     }
   }
 }
 
-// Вызов открытия редактирования при загрузке картинки
-const getNewImageForm = () => {
-  uploadFile.addEventListener('change', openModal);
+const addFormListenners = () => {
+  const addUploadImageButtonListener = () => {
+    uploadFile.addEventListener('change', openModal);
+  };
+  addUploadImageButtonListener();
+  buttonUploadCancel.addEventListener('click', closeModal);
+  document.addEventListener('keydown', onModalEsc);
 };
 
-// Вызов закрытия редактирования при клике на крестик
-buttonUploadCancel.addEventListener('click', closeModal);
+// Валидация
 
-// Вызов закрытия редактирования при нажатии ESC
-document.addEventListener('keydown', onModalEsc);
+// Удаление ошибки при невалидной валидации
+const removeError = () => {
+  containerHashtags.removeChild(validateError);
+  containerHashtags.classList.remove('has-danger');
+  textHashtags.removeEventListener('keydown', removeError);
+};
+// Добавление ошибки при невалидной валидации
+const addError = (errorName) => {
+  containerHashtags.append(validateError);
+  containerHashtags.classList.add('has-danger');
+  textHashtags.addEventListener('keydown', removeError);
+  validateError.textContent = errorName;
+};
+
+form.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  const hashtags = textHashtags.value.split(' ');
+  hashtags.forEach((hashtag) => {
+    if (hashtags.length > maxHashtagsLength) {
+      addError(errors.manyHashtags);
+    }
+    if(!regular.test(hashtag) && textHashtags.value.length !== 0){
+      addError(errors.badSymbols);
+    }
+    if (hashtag.split('')[0] !== hash && textHashtags.value.length !== 0) {
+      addError(errors.missingGrille);
+    }
+    if (hashtag.split('')[0] === hash && hashtag.split('').length === 1) {
+      addError(errors.noCompleteHashtag);
+    }
+    if (hashtag.indexOf('#', 1) >= 1) {
+      addError(errors.noSpace);
+    }
+    if (hashtag.length > 20) {
+      addError(errors.longHashtag);
+    }
+    const hashtagsLowLetters = [];
+    const hashtagLowLetters = hashtag.toLowerCase();
+    for (let i = 0; i < hashtags.length; i++){
+      hashtagsLowLetters.push(hashtags[i].toLowerCase());
+    }
+    if (hashtagsLowLetters.filter((i) => i === hashtagLowLetters).length > 1) {
+      addError(errors.repeatHashtag);
+    }
+  });
+});
+
 
 // Масштаб изображения: (сделал раньше времени)
 let scaleControlToNumber = Number(scaleControl.value.slice(0, -1));
@@ -75,80 +138,4 @@ effects.forEach((effect) => {
   });
 });
 
-
-// Валидация по pristine.js
-new Pristine(form, {
-  classTo: 'hashtags-comments-form__element',
-  errorTextParent: 'hashtags-comments-form__element',
-  errorClass: 'has-danger'
-});
-
-// Валидация
-const validateError = templateContent.cloneNode(true);
-form.addEventListener('submit', (evt) => {
-
-  const hashtagsArray = textHashtags.value.split(' ');
-  if (hashtagsArray.length > 5) {
-    validateError.textContent = 'Введено больше 5 хештегов';
-    addError();
-    evt.preventDefault();
-  }
-  let helper = 1;
-  hashtagsArray.forEach((hashtag) => {
-    const regular = /^#[A-Za-zA-Яа-яЁё0-9]{1,999}$/;
-    if(!regular.test(hashtag) && typeof hashtag.split('')[0] !== 'undefined'){
-      validateError.textContent = 'Хэштег должен содержать в себе буквы или цифры';
-      addError();
-      evt.preventDefault();
-    }
-    if (hashtag.split('')[0] !== '#' && typeof hashtag.split('')[0] !== 'undefined') {
-      validateError.textContent = 'Хэштег должен начинаться с #';
-      addError();
-      evt.preventDefault();
-    }
-    if (hashtag.split('')[0] === '#' && hashtag.split('').length === 1) {
-      validateError.textContent = 'Не дописан хэштег';
-      addError();
-      evt.preventDefault();
-    }
-    if (hashtag.indexOf('#', 1) >= 1) {
-      validateError.textContent = 'Хештеги должны быть разделены пробелом';
-      addError();
-      evt.preventDefault();
-    }
-    if (hashtag.length > 20) {
-      validateError.textContent = 'Хэштег не может быть длиннее 20 символов';
-      addError();
-      evt.preventDefault();
-    }
-    let repeatСounter = 0;
-    for (let i = helper; i < hashtagsArray.length; i++){
-      if (hashtag.toLowerCase() === hashtagsArray[i].toLowerCase()) {
-        repeatСounter++;
-      }
-    }
-    helper++;
-    if (repeatСounter === 1) {
-      validateError.textContent = 'Хэштеги не должны повторяться';
-      addError();
-      evt.preventDefault();
-      repeatСounter = 0;
-    }
-  });
-});
-
-// Добавление ошибки при невалидной валидации
-function addError() {
-  containerHashtags.append(validateError);
-  containerHashtags.classList.add('has-danger');
-  textHashtags.addEventListener('keydown', removeError);
-}
-
-// Удаление ошибки при невалидной валидации
-function removeError () {
-  containerHashtags.removeChild(validateError);
-  containerHashtags.classList.remove('has-danger');
-  textHashtags.removeEventListener('keydown', removeError);
-}
-
-export { getNewImageForm };
+export { addFormListenners };

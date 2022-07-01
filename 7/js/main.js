@@ -1,8 +1,8 @@
-import {getDescriptions} from './data.js';
-import {getPictures} from './render-pictures.js';
-import {getNewImageForm} from './form.js';
+import {getPhotos} from './data.js';
+import {createPictures} from './render-pictures.js';
+import {addFormListenners} from './form.js';
 
-const photos = getDescriptions();
-getPictures(photos);
+const photos = getPhotos();
+createPictures(photos);
 
-getNewImageForm();
+addFormListenners();
