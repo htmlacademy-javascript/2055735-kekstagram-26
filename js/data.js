@@ -2,7 +2,7 @@ import {getRandomNumber} from './util.js';
 import {getNoRepeatNumbers} from './util.js';
 
 //Функция ниже создаёт массив из 25 сгенерированных объектов:
-const getDescriptions = () => {
+const getPhotos = () => {
   const descriptions = [];
 
   const noRepeatNumbersComment = getNoRepeatNumbers(1, 75); // Массив с случайными неповторяющимися id комментариев
@@ -20,7 +20,7 @@ const getDescriptions = () => {
     descriptions[i].url = `photos/${i + 1}.jpg`;
     descriptions[i].description = 'Описание к фото';
     descriptions[i].likes = getRandomNumber(15, 200);
-    descriptions[i].comments = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+    descriptions[i].comments = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
     for (let j = 0; j < descriptions[i].comments.length; j++) {
       descriptions[i].comments[j].id = noRepeatNumbersComment[commentId];
       commentId++;
@@ -32,4 +32,4 @@ const getDescriptions = () => {
   return descriptions;
 };
 
-export {getDescriptions};
+export {getPhotos};
