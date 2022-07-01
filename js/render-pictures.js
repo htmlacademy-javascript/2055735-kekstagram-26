@@ -1,8 +1,7 @@
 import { getFullSizeImage } from './full-size-image.js';
 
 // Функция ниже отображает картинки в разметке
-
-const getPictures = (photos) => {
+const createPictures = (photos) => {
   const picturesContainer = document.querySelector('.pictures');
   const template = document.querySelector('#picture').content;
   const templateContent = template.querySelector('.picture');
@@ -23,4 +22,4 @@ const getPictures = (photos) => {
 };
 
 
-export {getPictures};
+export {createPictures};
