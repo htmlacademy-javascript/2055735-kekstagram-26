@@ -1,19 +1,21 @@
+import { COMMENTS_SHOW_AMOUNT } from './data.js';
+import { AVATAR_WIDTH } from './data.js';
+import { AVATAR_HEIGHT } from './data.js';
+
 const body = document.querySelector('body');
-const commentCounterText = document.querySelector('.social__comment-count');
-const commentsLoader = document.querySelector('.comments-loader');
+const commentsLoaderButton = document.querySelector('.comments-loader');
 const fullScreenDisplay = document.querySelector('.big-picture');
 const viewPhoto = document.querySelector('.big-picture__img');
 const likesCount = document.querySelector('.likes-count');
 const commentsCount = document.querySelector('.comments-count');
 const socialCommentsUl = document.querySelector('.social__comments');
 const buttonCancel = document.querySelector('.big-picture__cancel');
-
+const commentsShowCount = document.querySelector('.comments-count-show');
 
 const onModalEsc = (event) => {
   if (event.key === 'Escape'){
     closeModal();
   }
-
 };
 
 const openModal = () => {
@@ -26,10 +28,28 @@ function closeModal () {
   fullScreenDisplay.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onModalEsc);
+  commentsLoaderButton.classList.remove('hidden');
+  commentsShowCount.textContent = COMMENTS_SHOW_AMOUNT;
 }
 
-// Функция ниже отображает в разметке показ картинки в полном размере
-const getFullSizeImage = (photo) => {
+
+const loadComments = () => {
+  const comments = socialCommentsUl.querySelectorAll('li');
+  let newCommentCounter = 0;
+  comments.forEach((comment) => {
+    if (comment.classList.contains('hidden') && newCommentCounter !== COMMENTS_SHOW_AMOUNT) {
+      comment.classList.remove('hidden');
+      newCommentCounter++;
+      commentsShowCount.textContent = Number(commentsShowCount.textContent) + 1;
+    }
+  });
+  newCommentCounter = 0;
+  if (commentsShowCount.textContent === commentsCount.textContent) {
+    commentsLoaderButton.classList.add('hidden');
+  }
+};
+
+const showFullSizeImage = (photo) => {
   socialCommentsUl.innerHTML = null;
   viewPhoto.querySelector('img').src = photo.url;
   likesCount.textContent = photo.likes;
@@ -42,31 +62,19 @@ const getFullSizeImage = (photo) => {
     img.classList.add('social__picture');
     img.src = comment.avatar;
     img.alt = comment.name;
-    img.width = 35;
-    img.height = 35;
+    img.width = AVATAR_WIDTH;
+    img.height = AVATAR_HEIGHT;
     li.append(img);
     const p = document.createElement('p');
     p.classList.add('social__text');
     p.textContent = comment.message;
     li.append(p);
-    li.classList.add('hidden')
+    if (socialCommentsUl.children.length >= COMMENTS_SHOW_AMOUNT) {
+      li.classList.add('hidden');
+    }
     socialCommentsUl.append(li);
   });
-  // Отображение 5 комментариев:
-  for (let i = 0; i < 5; i++) {
-    const comments = socialCommentsUl.querySelectorAll('.social__comment');
-    comments[i].classList.remove('hidden');
-  }
-  // Загрузить ещё 5 комментариев (по клику):
-  //   commentsLoader.addEventListener('click', () => {
-  //     const commentCounter = Number(commentCounterText.textContent.split(' ')[0]);
-  //     for (let i = commentCounter; i < commentCounter + 5; i++){
-  //       const comments = socialCommentsUl.querySelectorAll('.social__comment');
-  //       comments[i].classList.remove('hidden');
-  //     }
-  //     commentCounterText.textContent = `${commentCounter + 5} из 10 комментариев`;
-  //   });
-
+  commentsLoaderButton.addEventListener('click', loadComments);
   openModal();
   buttonCancel.addEventListener('click', (evt) => {
     evt.preventDefault();
@@ -75,4 +83,5 @@ const getFullSizeImage = (photo) => {
 };
 
 
-export {getFullSizeImage};
+export { showFullSizeImage };
+
