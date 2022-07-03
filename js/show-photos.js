@@ -1,7 +1,7 @@
-import { getFullSizeImage } from './full-size-image.js';
+import { showFullSizeImage } from './full-size-image.js';
 
 // Функция ниже отображает картинки в разметке
-const createPictures = (photos) => {
+const showPhotos = (photos) => {
   const picturesContainer = document.querySelector('.pictures');
   const template = document.querySelector('#picture').content;
   const templateContent = template.querySelector('.picture');
@@ -14,12 +14,11 @@ const createPictures = (photos) => {
     fragment.append(picture);
 
     picture.addEventListener('click', () => {
-      getFullSizeImage(photos[i]);
-
+      showFullSizeImage(photos[i]);
     });
   }
   picturesContainer.append(fragment);
 };
 
 
-export {createPictures};
+export {showPhotos};

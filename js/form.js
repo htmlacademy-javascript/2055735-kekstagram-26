@@ -1,17 +1,11 @@
-const esc = { key: 'Escape' };
-const regular = /^#[A-Za-zA-Яа-яЁё0-9]{1,999}$/;
-const maxHashtagsLength = 5;
-const hash = '#';
-const errors = {
-  manyHashtags: 'Введено больше 5 хештегов',
-  badSymbols: 'Хэштег должен содержать в себе буквы или цифры',
-  missingGrille: 'Хэштег должен начинаться с #',
-  noCompleteHashtag: 'Не дописан хэштег',
-  noSpace: 'Хештеги должны быть разделены пробелом',
-  longHashtag: 'Хэштег не может быть длиннее 20 символов',
-  repeatHashtag: 'Хэштеги не должны повторяться',
-  noImage: 'Не загружено изображение'
-};
+import { KEYS } from './data.js';
+import { HASHTAGS_PATTERN } from './data.js';
+import { MAX_HASHTAGS_AMOUNT } from './data.js';
+import { MAX_HASHTAG_LENGTH } from './data.js';
+import { HASH } from './data.js';
+import { ERRORS } from './data.js';
+
+
 const imgEditForm = document.querySelector('.img-upload__overlay');
 const body = document.querySelector('body');
 const scaleBiggerButton = document.querySelector('.scale__control--bigger');
@@ -22,11 +16,11 @@ const uploadFile = document.querySelector('#upload-file');
 const buttonUploadCancel = document.querySelector('#upload-cancel');
 const effects = document.querySelectorAll('.effects__radio');
 const form = document.querySelector('.img-upload__form');
-const textHashtags = document.querySelector('.text__hashtags');
-const textDescriptions = document.querySelector('.text__description');
+const textHashtagsField = document.querySelector('.text__hashtags');
+const textDescriptionsField = document.querySelector('.text__description');
 const template = document.querySelector('#validate-error').content;
 const templateContent = template.querySelector('div');
-const containerHashtags = document.querySelector('.img-upload__field-wrapper');
+const hashtagsContainer = document.querySelector('.img-upload__field-wrapper');
 const validateError = templateContent.cloneNode(true);
 
 // Открытие редактирования
@@ -44,69 +38,114 @@ const closeModal = () => {
 
 // Закрытие редактирования на ESC
 function onModalEsc (evt) {
-  if (evt.key === esc.key) {
-    if (textHashtags !== document.activeElement && textDescriptions !== document.activeElement) {
-      closeModal();
-    }
+  if (evt.key !== KEYS.key) {
+    return;
+  }
+  if (textHashtagsField !== document.activeElement && textDescriptionsField !== document.activeElement) {
+    closeModal();
   }
 }
 
-const addFormListenners = () => {
-  const addUploadImageButtonListener = () => {
-    uploadFile.addEventListener('change', openModal);
-  };
-  addUploadImageButtonListener();
-  buttonUploadCancel.addEventListener('click', closeModal);
-  document.addEventListener('keydown', onModalEsc);
+const addUploadImageButtonListener = () => {
+  uploadFile.addEventListener('change', openModal);
 };
-
-// Валидация
+buttonUploadCancel.addEventListener('click', closeModal);
+document.addEventListener('keydown', onModalEsc);
 
 // Удаление ошибки при невалидной валидации
 const removeError = () => {
-  containerHashtags.removeChild(validateError);
-  containerHashtags.classList.remove('has-danger');
-  textHashtags.removeEventListener('keydown', removeError);
+  hashtagsContainer.removeChild(validateError);
+  hashtagsContainer.classList.remove('has-danger');
+  textHashtagsField.removeEventListener('keydown', removeError);
 };
 // Добавление ошибки при невалидной валидации
 const addError = (errorName) => {
-  containerHashtags.append(validateError);
-  containerHashtags.classList.add('has-danger');
-  textHashtags.addEventListener('keydown', removeError);
+  hashtagsContainer.append(validateError);
+  hashtagsContainer.classList.add('has-danger');
+  textHashtagsField.addEventListener('keydown', removeError);
   validateError.textContent = errorName;
 };
 
 form.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  const hashtags = textHashtags.value.split(' ');
-  hashtags.forEach((hashtag) => {
-    if (hashtags.length > maxHashtagsLength) {
-      addError(errors.manyHashtags);
-    }
-    if(!regular.test(hashtag) && textHashtags.value.length !== 0){
-      addError(errors.badSymbols);
-    }
-    if (hashtag.split('')[0] !== hash && textHashtags.value.length !== 0) {
-      addError(errors.missingGrille);
-    }
-    if (hashtag.split('')[0] === hash && hashtag.split('').length === 1) {
-      addError(errors.noCompleteHashtag);
-    }
-    if (hashtag.indexOf('#', 1) >= 1) {
-      addError(errors.noSpace);
-    }
-    if (hashtag.length > 20) {
-      addError(errors.longHashtag);
-    }
-    const hashtagsLowLetters = [];
-    const hashtagLowLetters = hashtag.toLowerCase();
-    for (let i = 0; i < hashtags.length; i++){
-      hashtagsLowLetters.push(hashtags[i].toLowerCase());
-    }
-    if (hashtagsLowLetters.filter((i) => i === hashtagLowLetters).length > 1) {
-      addError(errors.repeatHashtag);
-    }
-  });
+  const hashtags = textHashtagsField.value.split(' ');
+
+  const checkHashtagRepeat = () => {
+    hashtags.forEach((hashtag) => {
+      const hashtagsLowLetters = [];
+      const hashtagLowLetters = hashtag.toLowerCase();
+      for (let i = 0; i < hashtags.length; i++){
+        hashtagsLowLetters.push(hashtags[i].toLowerCase());
+      }
+      if (hashtagsLowLetters.filter((i) => i === hashtagLowLetters).length > 1) {
+        addError(ERRORS.repeatHashtag);
+      }
+    });
+  };
+
+  const checkHashtagSymbols = () => {
+    let errorConter = 0;
+    hashtags.forEach((hashtag) => {
+      if(!HASHTAGS_PATTERN.test(hashtag) && textHashtagsField.value.length !== 0){
+        addError(ERRORS.badSymbols);
+        errorConter++;
+      }
+    });
+    if (errorConter === 0) { checkHashtagRepeat(); }
+  };
+
+  const checkHashtagLength = () => {
+    let errorConter = 0;
+    hashtags.forEach((hashtag) => {
+      if (hashtag.length > MAX_HASHTAG_LENGTH) {
+        addError(ERRORS.longHashtag);
+        errorConter++;
+      }
+    });
+    if (errorConter === 0) { checkHashtagSymbols(); }
+  };
+
+  const checkHashtagsAmount = () => {
+    if (hashtags.length > MAX_HASHTAGS_AMOUNT) {
+      addError(ERRORS.manyHashtags);
+    }else{checkHashtagLength();}
+  };
+
+  const checkHashtagsSpace = () => {
+    let errorConter = 0;
+    hashtags.forEach((hashtag) => {
+      if (hashtag.indexOf('#', 1) >= 1) {
+        addError(ERRORS.noSpace);
+        errorConter++;
+      }
+    });
+    if (errorConter === 0) { checkHashtagsAmount(); }
+  };
+
+  const checkCompleteHash = () => {
+    let errorConter = 0;
+    hashtags.forEach((hashtag) => {
+      if (hashtag.split('')[0] === HASH && hashtag.split('').length === 1) {
+        addError(ERRORS.noCompleteHashtag);
+        errorConter++;
+      }
+    });
+    if (errorConter === 0) { checkHashtagsSpace(); }
+  };
+
+  const checkHash = () => {
+    let errorConter = 0;
+    hashtags.forEach((hashtag) => {
+      if (hashtag.split('')[0] !== HASH && textHashtagsField.value.length !== 0) {
+        addError(ERRORS.missingHash);
+        errorConter++;
+      }
+    });
+    if(errorConter === 0){checkCompleteHash();}
+  };
+
+  checkHash();
+
 });
 
 
@@ -138,4 +177,4 @@ effects.forEach((effect) => {
   });
 });
 
-export { addFormListenners };
+export { addUploadImageButtonListener };

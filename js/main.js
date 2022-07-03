@@ -1,8 +1,8 @@
-import {getPhotos} from './data.js';
-import {createPictures} from './render-pictures.js';
-import {addFormListenners} from './form.js';
+import { getPhotos } from './photos.js';
+import { showPhotos } from './show-photos.js';
+import { addUploadImageButtonListener } from './form.js';
 
 const photos = getPhotos();
-createPictures(photos);
+showPhotos(photos);
 
-addFormListenners();
+addUploadImageButtonListener();
