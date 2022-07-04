@@ -1,6 +1,8 @@
-import { COMMENTS_SHOW_AMOUNT } from './data.js';
-import { AVATAR_WIDTH } from './data.js';
-import { AVATAR_HEIGHT } from './data.js';
+import {
+  SHOWN_COMMENTS_AMOUNT,
+  AVATAR_DIMENSION
+} from './data.js';
+
 
 const body = document.querySelector('body');
 const commentsLoaderButton = document.querySelector('.comments-loader');
@@ -8,12 +10,12 @@ const fullScreenDisplay = document.querySelector('.big-picture');
 const viewPhoto = document.querySelector('.big-picture__img');
 const likesCount = document.querySelector('.likes-count');
 const commentsCount = document.querySelector('.comments-count');
-const socialCommentsUl = document.querySelector('.social__comments');
+const socialCommentsContainer = document.querySelector('.social__comments');
 const buttonCancel = document.querySelector('.big-picture__cancel');
-const commentsShowCount = document.querySelector('.comments-count-show');
+const commentsShownCount = document.querySelector('.comments-count-show');
 
 const onModalEsc = (event) => {
-  if (event.key === 'Escape'){
+  if (event.key === 'Escape') {
     closeModal();
   }
 };
@@ -24,33 +26,33 @@ const openModal = () => {
   document.addEventListener('keydown', onModalEsc);
 };
 
-function closeModal () {
+function closeModal() {
   fullScreenDisplay.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onModalEsc);
   commentsLoaderButton.classList.remove('hidden');
-  commentsShowCount.textContent = COMMENTS_SHOW_AMOUNT;
+  commentsShownCount.textContent = SHOWN_COMMENTS_AMOUNT;
 }
 
 
 const loadComments = () => {
-  const comments = socialCommentsUl.querySelectorAll('li');
+  const comments = socialCommentsContainer.querySelectorAll('li');
   let newCommentCounter = 0;
   comments.forEach((comment) => {
-    if (comment.classList.contains('hidden') && newCommentCounter !== COMMENTS_SHOW_AMOUNT) {
+    if (comment.classList.contains('hidden') && newCommentCounter !== SHOWN_COMMENTS_AMOUNT) {
       comment.classList.remove('hidden');
       newCommentCounter++;
-      commentsShowCount.textContent = Number(commentsShowCount.textContent) + 1;
+      commentsShownCount.textContent = Number(commentsShownCount.textContent) + 1;
     }
   });
   newCommentCounter = 0;
-  if (commentsShowCount.textContent === commentsCount.textContent) {
+  if (commentsShownCount.textContent === commentsCount.textContent) {
     commentsLoaderButton.classList.add('hidden');
   }
 };
 
 const showFullSizeImage = (photo) => {
-  socialCommentsUl.innerHTML = null;
+  socialCommentsContainer.innerHTML = null;
   viewPhoto.querySelector('img').src = photo.url;
   likesCount.textContent = photo.likes;
   commentsCount.textContent = photo.comments.length;
@@ -62,17 +64,17 @@ const showFullSizeImage = (photo) => {
     img.classList.add('social__picture');
     img.src = comment.avatar;
     img.alt = comment.name;
-    img.width = AVATAR_WIDTH;
-    img.height = AVATAR_HEIGHT;
+    img.width = AVATAR_DIMENSION.WIDTH;
+    img.height = AVATAR_DIMENSION.HEIGHT;
     li.append(img);
     const p = document.createElement('p');
     p.classList.add('social__text');
     p.textContent = comment.message;
     li.append(p);
-    if (socialCommentsUl.children.length >= COMMENTS_SHOW_AMOUNT) {
+    if (socialCommentsContainer.children.length >= SHOWN_COMMENTS_AMOUNT) {
       li.classList.add('hidden');
     }
-    socialCommentsUl.append(li);
+    socialCommentsContainer.append(li);
   });
   commentsLoaderButton.addEventListener('click', loadComments);
   openModal();
@@ -83,5 +85,6 @@ const showFullSizeImage = (photo) => {
 };
 
 
-export { showFullSizeImage };
-
+export {
+  showFullSizeImage
+};

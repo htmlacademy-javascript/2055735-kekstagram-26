@@ -1,12 +1,18 @@
-import { getRandomNumber } from './util.js';
-import { MESSAGES } from './data.js';
-import { NAMES } from './data.js';
-import { PHOTOS_AMOUNT } from './data.js';
-import { COMMENTS_AMOUNT } from './data.js';
+import {
+  getRandomNumber
+} from './util.js';
+
+import {
+  MESSAGES,
+  NAMES,
+  PHOTOS_AMOUNT,
+  COMMENTS_AMOUNT
+} from './data.js';
+
 
 const getComments = () => {
   const comments = [];
-  for (let i = 0; i < COMMENTS_AMOUNT; i++){
+  for (let i = 0; i < COMMENTS_AMOUNT; i++) {
     const comment = {};
     comment.id = i + 1;
     comment.avatar = `img/avatar-${getRandomNumber(1, 6)}.svg`;
@@ -30,4 +36,6 @@ const getPhotos = () => {
   return photos;
 };
 
-export { getPhotos };
+export {
+  getPhotos
+};
