@@ -76,7 +76,10 @@ const hasDublicatesError = (hashtags) => {
   }
 };
 
-const isValid = (hashtags) => {
+const isValid = (evt) => {
+  evt.preventDefault();
+  const textHashtagsFieldElements = textHashtagsField.value.split(' ');
+  const hashtags = textHashtagsFieldElements.filter((word) => word.length >= 1);
   if (hasNoHashError(hashtags) === true) {
     addError(ERROR.missingHash);
     return;
@@ -105,6 +108,7 @@ const isValid = (hashtags) => {
     addError(ERROR.badSymbols);
   }
 };
+
 
 export {
   isValid

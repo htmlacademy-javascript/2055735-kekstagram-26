@@ -13,7 +13,8 @@ import {
 } from './image-scale.js';
 
 import {
-  addEffectsListeners
+  addEffectsListener,
+  removeEffectsListener
 } from './image-effects.js';
 
 const imgEditForm = document.querySelector('.img-upload__overlay');
@@ -27,13 +28,6 @@ const textHashtagsField = document.querySelector('.text__hashtags');
 const textDescriptionsField = document.querySelector('.text__description');
 const slider = document.querySelector('.effect-level__slider');
 
-const openModal = () => {
-  imgEditForm.classList.remove('hidden');
-  body.classList.add('modal-open');
-  slider.classList.add('hidden');
-  addScaleListeners();
-  addEffectsListeners();
-};
 
 const closeModal = () => {
   imgEditForm.classList.add('hidden');
@@ -44,6 +38,21 @@ const closeModal = () => {
   imgPreview.style.transform = `scale(${1})`;
   scaleControl.value = PREVIEW_SCALE_MAX;
   removeScaleListeners();
+  removeEffectsListener();
+  buttonUploadCancel.removeEventListener('click', closeModal);
+  document.removeEventListener('keydown', onModalEsc);
+  form.removeEventListener('submit', isValid);
+};
+
+const openModal = () => {
+  imgEditForm.classList.remove('hidden');
+  body.classList.add('modal-open');
+  slider.classList.add('hidden');
+  addScaleListeners();
+  addEffectsListener();
+  buttonUploadCancel.addEventListener('click', closeModal);
+  document.addEventListener('keydown', onModalEsc);
+  form.addEventListener('submit', isValid);
 };
 
 function onModalEsc(evt) {
@@ -59,16 +68,6 @@ const addUploadImageButtonListener = () => {
   uploadFile.addEventListener('change', openModal);
 };
 
-buttonUploadCancel.addEventListener('click', closeModal);
-
-document.addEventListener('keydown', onModalEsc);
-
-form.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  const textHashtagsFieldElements = textHashtagsField.value.split(' ');
-  const hashtags = textHashtagsFieldElements.filter((word) => word.length >= 1);
-  isValid(hashtags);
-});
 
 export {
   addUploadImageButtonListener
