@@ -12,4 +12,4 @@ const photos = getPhotos();
 showPhotos(photos);
 
 addUploadImageButtonListener();
-console.log('Тест')
+console.log(test)
