@@ -13,4 +13,4 @@ showPhotos(photos);
 
 addUploadImageButtonListener();
 console.log(тест)
-console.log(test)
+console.log('test')
