@@ -3,7 +3,7 @@ import {
   MAX_HASHTAGS_AMOUNT,
   MAX_HASHTAG_LENGTH,
   HASH,
-  ERROR,
+  Error,
 } from './data.js';
 
 const textHashtagsField = document.querySelector('.text__hashtags');
@@ -25,26 +25,20 @@ const addError = (errorName) => {
   validateError.textContent = errorName;
 };
 
-const hasNoHashError = (hashtags) => {
-  for (let i = 0; i < hashtags.length; i++) {
-    if (hashtags[i].split('')[0] !== HASH) {
-      return true;
-    }
+const hasNoHashError = (hashtag) => {
+  if (hashtag.split('')[0] !== HASH) {
+    return true;
   }
 };
-const hasIncompleteError = (hashtags) => {
-  for (let i = 0; i < hashtags.length; i++) {
-    if (hashtags[i].split('')[0] === HASH && hashtags[i].split('').length === 1) {
-      return true;
-    }
+const hasIncompleteError = (hashtag) => {
+  if (hashtag.split('')[0] === HASH && hashtag.split('').length === 1) {
+    return true;
   }
 };
-const hasNoSpaceError = (hashtags) => {
-  for (let i = 0; i < hashtags.length; i++) {
-    const letters = hashtags[i].split('');
-    if (letters.filter((letter) => letter === HASH).length > 1) {
-      return true;
-    }
+const hasNoSpaceError = (hashtag) => {
+  const letters = hashtag.split('');
+  if (letters.filter((letter) => letter === HASH).length > 1) {
+    return true;
   }
 };
 const hasExcessHashtagsCountError = (hashtags) => {
@@ -52,27 +46,22 @@ const hasExcessHashtagsCountError = (hashtags) => {
     return true;
   }
 };
-const hasHashtagLengthError = (hashtags) => {
-  for (let i = 0; i < hashtags.length; i++) {
-    if (hashtags[i].length > MAX_HASHTAG_LENGTH) {
-      return true;
-    }
+const hasHashtagLengthError = (hashtag) => {
+  if (hashtag.length > MAX_HASHTAG_LENGTH) {
+    return true;
   }
 };
-const hasInvalidSymbolsError = (hashtags) => {
-  for (let i = 0; i < hashtags.length; i++) {
-    if (!HASHTAGS_PATTERN.test(hashtags[i])) {
-      return true;
-    }
+const hasInvalidSymbolsError = (hashtag) => {
+  if (!HASHTAGS_PATTERN.test(hashtag)) {
+    return true;
   }
 };
-const hasDublicatesError = (hashtags) => {
-  for (let i = 0; i < hashtags.length; i++) {
-    const lowerСaseHashtag = hashtags[i].toLowerCase();
-    const lowerСaseHashtags = hashtags.map((oneHashtag) => oneHashtag.toLowerCase());
-    if (lowerСaseHashtags.filter((j) => j === lowerСaseHashtag).length > 1) {
-      return true;
-    }
+
+const hasDublicatesError = (hashtags, hashtag) => {
+  const lowerСaseHashtag = hashtag.toLowerCase();
+  const lowerСaseHashtags = hashtags.map((oneHashtag) => oneHashtag.toLowerCase());
+  if (lowerСaseHashtags.filter((j) => j === lowerСaseHashtag).length > 1) {
+    return true;
   }
 };
 
@@ -80,35 +69,36 @@ const isValid = (evt) => {
   evt.preventDefault();
   const textHashtagsFieldElements = textHashtagsField.value.split(' ');
   const hashtags = textHashtagsFieldElements.filter((word) => word.length >= 1);
-  if (hasNoHashError(hashtags) === true) {
-    addError(ERROR.missingHash);
-    return;
-  }
-  if (hasIncompleteError(hashtags) === true) {
-    addError(ERROR.emptyHashtag);
-    return;
-  }
-  if (hasNoSpaceError(hashtags) === true) {
-    addError(ERROR.noSpace);
-    return;
-  }
-  if (hasHashtagLengthError(hashtags) === true) {
-    addError(ERROR.longHashtag);
-    return;
-  }
-  if (hasDublicatesError(hashtags) === true) {
-    addError(ERROR.repeatHashtag);
-    return;
-  }
-  if (hasExcessHashtagsCountError(hashtags) === true) {
-    addError(ERROR.manyHashtags);
-    return;
-  }
-  if (hasInvalidSymbolsError(hashtags) === true) {
-    addError(ERROR.badSymbols);
-  }
+  hashtags.forEach((hashtag) => {
+    if (hasNoHashError(hashtag) === true) {
+      addError(Error.missingHash);
+      return;
+    }
+    if (hasIncompleteError(hashtag) === true) {
+      addError(Error.emptyHashtag);
+      return;
+    }
+    if (hasNoSpaceError(hashtag) === true) {
+      addError(Error.noSpace);
+      return;
+    }
+    if (hasHashtagLengthError(hashtag) === true) {
+      addError(Error.longHashtag);
+      return;
+    }
+    if (hasDublicatesError(hashtags, hashtag) === true) {
+      addError(Error.repeatHashtag);
+      return;
+    }
+    if (hasExcessHashtagsCountError(hashtags) === true) {
+      addError(Error.manyHashtags);
+      return;
+    }
+    if (hasInvalidSymbolsError(hashtag) === true) {
+      addError(Error.badSymbols);
+    }
+  });
 };
-
 
 export {
   isValid

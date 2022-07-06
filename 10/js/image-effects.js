@@ -1,12 +1,12 @@
 import {
-  chromeSlider,
-  sepiaSlider,
-  marvinSlider,
-  phobosSlider,
-  heatSlider
+  ChromeSlider,
+  SepiaSlider,
+  MarvinSlider,
+  PhobosSlider,
+  HeatSlider
 } from './nouislider-options.js';
 
-const effects = document.querySelector('.effects__list');
+const effects = document.querySelector('.img-upload__effects');
 const effectLevel = document.querySelector('.effect-level__value');
 const imgPreview = document.querySelector('.img-upload__preview').querySelector('img');
 const slider = document.querySelector('.effect-level__slider');
@@ -35,44 +35,61 @@ const setupEffect = (effect) => {
   imgPreview.classList.add(`effects__preview--${effect.value}`);
 };
 
+const getOptions = (effect) => {
+  let options;
+  switch (effect) {
+    case 'chrome':
+      options = ChromeSlider;
+      return options;
+    case 'sepia':
+      options = SepiaSlider;
+      return options;
+    case 'marvin':
+      options = MarvinSlider;
+      return options;
+    case 'phobos':
+      options = PhobosSlider;
+      return options;
+    case 'heat':
+      options = HeatSlider;
+      return options;
+  }
+};
+
+const getFilterParts = (effect) => {
+  const filterParts = [];
+  switch (effect) {
+    case 'chrome':
+      filterParts.push('grayscale(');
+      filterParts.push(')');
+      return filterParts;
+    case 'sepia':
+      filterParts.push('sepia(');
+      filterParts.push(')');
+      return filterParts;
+    case 'marvin':
+      filterParts.push('invert(');
+      filterParts.push(')');
+      return filterParts;
+    case 'phobos':
+      filterParts.push('blur(');
+      filterParts.push(')');
+      return filterParts;
+    case 'heat':
+      filterParts.push('brightness(');
+      filterParts.push(')');
+      return filterParts;
+  }
+};
+
 const addEffect = (evt) => {
   setupEffect(evt.target);
   checkNoneEffect();
-  if (imgPreview.classList.contains('effects__preview--chrome')) {
-    slider.noUiSlider.updateOptions(chromeSlider);
-    slider.noUiSlider.on('update', () => {
-      effectLevel.value = slider.noUiSlider.get();
-      imgPreview.style.filter = `grayscale(${effectLevel.value})`;
-    });
-  }
-  if (imgPreview.classList.contains('effects__preview--sepia')) {
-    slider.noUiSlider.updateOptions(sepiaSlider);
-    slider.noUiSlider.on('update', () => {
-      effectLevel.value = slider.noUiSlider.get();
-      imgPreview.style.filter = `sepia(${effectLevel.value})`;
-    });
-  }
-  if (imgPreview.classList.contains('effects__preview--marvin')) {
-    slider.noUiSlider.updateOptions(marvinSlider);
-    slider.noUiSlider.on('update', () => {
-      effectLevel.value = slider.noUiSlider.get();
-      imgPreview.style.filter = `invert(${effectLevel.value}%)`;
-    });
-  }
-  if (imgPreview.classList.contains('effects__preview--phobos')) {
-    slider.noUiSlider.updateOptions(phobosSlider);
-    slider.noUiSlider.on('update', () => {
-      effectLevel.value = slider.noUiSlider.get();
-      imgPreview.style.filter = `blur(${effectLevel.value}px)`;
-    });
-  }
-  if (imgPreview.classList.contains('effects__preview--heat')) {
-    slider.noUiSlider.updateOptions(heatSlider);
-    slider.noUiSlider.on('update', () => {
-      effectLevel.value = slider.noUiSlider.get();
-      imgPreview.style.filter = `brightness(${effectLevel.value})`;
-    });
-  }
+  slider.noUiSlider.updateOptions(getOptions(evt.target.value));
+  slider.noUiSlider.on('update', () => {
+    effectLevel.value = slider.noUiSlider.get();
+    imgPreview.style.filter = getFilterParts(evt.target.value)[0] + effectLevel.value + getFilterParts(evt.target.value)[1];
+  });
 };
 
 const addEffectsListener = () => {
