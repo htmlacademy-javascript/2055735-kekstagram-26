@@ -1,5 +1,5 @@
 import {
-  KEY,
+  Key,
   PREVIEW_SCALE_MAX,
 } from './data.js';
 
@@ -56,7 +56,7 @@ const openModal = () => {
 };
 
 function onModalEsc(evt) {
-  if (evt.key !== KEY.ESCAPE) {
+  if (evt.key !== Key.ESCAPE) {
     return;
   }
   if (textHashtagsField !== document.activeElement && textDescriptionsField !== document.activeElement) {

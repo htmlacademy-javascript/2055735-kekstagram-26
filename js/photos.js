@@ -37,5 +37,6 @@ const getPhotos = () => {
 };
 
 export {
-  getPhotos
+  getPhotos,
+  getComments
 };

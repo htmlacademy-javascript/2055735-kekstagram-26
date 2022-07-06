@@ -1,4 +1,4 @@
-const chromeSlider = {
+const ChromeSlider = {
   connect: 'lower',
   range: {
     min: 0,
@@ -8,7 +8,7 @@ const chromeSlider = {
   step: 0.1,
 };
 
-const sepiaSlider = {
+const SepiaSlider = {
   connect: 'lower',
   range: {
     min: 0,
@@ -18,7 +18,7 @@ const sepiaSlider = {
   step: 0.1,
 };
 
-const marvinSlider = {
+const MarvinSlider = {
   connect: 'lower',
   range: {
     min: 0,
@@ -28,7 +28,7 @@ const marvinSlider = {
   step: 1,
 };
 
-const phobosSlider = {
+const PhobosSlider = {
   connect: 'lower',
   range: {
     min: 0,
@@ -38,7 +38,7 @@ const phobosSlider = {
   step: 0.1,
 };
 
-const heatSlider = {
+const HeatSlider = {
   connect: 'lower',
   range: {
     min: 1,
@@ -49,9 +49,9 @@ const heatSlider = {
 };
 
 export {
-  chromeSlider,
-  sepiaSlider,
-  marvinSlider,
-  phobosSlider,
-  heatSlider
+  ChromeSlider,
+  SepiaSlider,
+  MarvinSlider,
+  PhobosSlider,
+  HeatSlider
 };

@@ -10,13 +10,6 @@ const NAMES = ['Андрей', 'Юля', 'Денис', 'Маша', 'Женя', '
 const PHOTOS_AMOUNT = 25;
 const COMMENTS_AMOUNT = 15;
 const SHOWN_COMMENTS_AMOUNT = 5;
-const AVATAR_DIMENSION = {
-  WIDTH: 35,
-  HEIGHT: 35
-};
-const KEY = {
-  ESCAPE: 'Escape'
-};
 const PREVIEW_SCALE_MIN = '25%';
 const PREVIEW_SCALE_MAX = '100%';
 const PREVIEW_SCALE_STEP = 25;
@@ -24,7 +17,14 @@ const HASHTAGS_PATTERN = /^#[A-Za-zA-Яа-яЁё0-9]{1,999}$/;
 const MAX_HASHTAGS_AMOUNT = 5;
 const MAX_HASHTAG_LENGTH = 20;
 const HASH = '#';
-const ERROR = {
+const AvatarDimension = {
+  WIDTH: 35,
+  HEIGHT: 35
+};
+const Key = {
+  ESCAPE: 'Escape'
+};
+const Error = {
   manyHashtags: 'Введено больше 5 хештегов',
   badSymbols: 'Хэштег должен содержать в себе буквы или цифры',
   missingHash: 'Хэштег должен начинаться с #',
@@ -41,13 +41,13 @@ export {
   PHOTOS_AMOUNT,
   COMMENTS_AMOUNT,
   SHOWN_COMMENTS_AMOUNT,
-  KEY,
+  Key,
   HASHTAGS_PATTERN,
   MAX_HASHTAGS_AMOUNT,
   MAX_HASHTAG_LENGTH,
   HASH,
-  ERROR,
-  AVATAR_DIMENSION,
+  Error,
+  AvatarDimension,
   PREVIEW_SCALE_STEP,
   PREVIEW_SCALE_MIN,
   PREVIEW_SCALE_MAX
